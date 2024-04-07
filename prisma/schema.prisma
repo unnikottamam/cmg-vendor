@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  title     String
+  category  String
+  location  String   @default("Go to CMG")
+  content   String   @db.LongText
+  wooId     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+model Account {
+  id                 Int       @id @default(autoincrement())
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
+  userId             Int
+}
+
+model Session {
+  id           Int      @id @default(autoincrement())
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  hashPassword  String
+  firstName     String
+  lastName      String
+  company       String?
+  phone         String
+  country       Country   @default(CANADA)
+  state         String
+  city          String
+  streetAddress String
+  zip           String
+  products      Product[]
+  isActive      Boolean   @default(true)
+  isVerified    Boolean   @default(false)
+  role          Role      @default(EDITOR)
+  Account       Account[]
+  Session       Session[]
+}
+
+model VerificationToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+
+  @@unique([token, userId])
+}
+
+model PasswordResetToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+
+  @@unique([token, userId])
+}
+
+enum Role {
+  EDITOR
+  ADMIN
+}
+
+enum Country {
+  CANADA
+  USA
+}
