@@ -21,7 +21,7 @@ interface Category {
 
 const fetchAllCategories = async () => {
     try {
-        const response = await axios.get<Category[]>(`/api/products`);
+        const response = await axios.get<Category[]>('/api/products');
         return response.data;
     } catch (error) {
         throw new Error("Error fetching categories");
@@ -71,16 +71,16 @@ const NewProduct = () => {
             formData.append('category', data.category);
             formData.append('location', data.location);
             data.files.forEach((file, index) => {
-                formData.append(`files[]`, file);
+                formData.append('files[]', file);
             });
 
-            await axios.post(`/api/products`, formData, {
+            await axios.post('/api/products', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             toast.success("Product created successfully");
-            router.push(`/products`);
+            router.push('/products');
             router.refresh();
         } catch (error) {
             toast.error("There was an error creating the product, please contact sales team");
@@ -188,17 +188,20 @@ const NewProduct = () => {
                                         <input {...getInputProps()} />
                                         <p className="text-sm text-center text-destructive">
                                             <em>
-                                                Drag 'n' drop <strong>multiple</strong> images here, or click to select <strong>multiple files</strong>
+                                                Drag and drop <strong>multiple</strong> images here, or click to select <strong>multiple files</strong>
                                             </em>
                                         </p>
                                     </div>
                                     <div className="grid grid-cols-4 gap-2">
                                         {files.map((file, index) => (
-                                            <img
+                                            <Image
                                                 key={index}
                                                 src={URL.createObjectURL(file)}
                                                 alt={file.name}
                                                 className="w-full p-1 border"
+                                                quality={85}
+                                                width={100}
+                                                height={100}
                                                 style={{ height: '100px' }}
                                             />
                                         ))}
