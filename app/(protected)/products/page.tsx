@@ -143,7 +143,6 @@ const ProductsPage = async () => {
                     )}
                 </TableBody>
             </Table>
-
         </>
     )
 }

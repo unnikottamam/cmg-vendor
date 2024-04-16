@@ -7,7 +7,6 @@ import { Disclosure } from '@headlessui/react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { logout } from '@/actions/logout';
-
 interface NavigationItem {
     name: string;
     href: string;
@@ -30,7 +29,7 @@ const NavBar = () => {
         };
         if (role in roles) {
             navigation = roles[role];
-            navigation.push({ name: 'Add New Product', href: '/products/new' });
+            navigation.push({ name: 'Add New Machine', href: '/products/new' });
         }
     }
 
