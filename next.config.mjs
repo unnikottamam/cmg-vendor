@@ -10,6 +10,7 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "stag.coastmachinery.com",
+        hostname: "coastmachinery.com",
       },
     ],
   },

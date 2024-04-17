@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         const imgData = new FormData();
         imgData.append(`file`, file);
         const response = await axios.post(
-            'https://stag.coastmachinery.com/wp-json/wp/v2/media',
+            `${process.env.WOO_URL}/wp-json/wp/v2/media`,
             imgData,
             {
                 headers: {
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     const deletePromises = savedFilePaths.map(async (file) => {
         await axios.delete(
-            `https://stag.coastmachinery.com/wp-json/wp/v2/media/${file.id}?force=true`,
+            `${process.env.WOO_URL}/wp-json/wp/v2/media/${file.id}?force=true`,
             {
                 auth: {
                     username: process.env.WORDPRESS_USER as string,
