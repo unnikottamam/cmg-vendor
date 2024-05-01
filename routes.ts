@@ -28,6 +28,16 @@ export const authRoutes: string[] = [
 export const apiAuthPrefix: string = "/api/auth";
 
 /**
+ * Array of routes that are considered as sales routes.
+ * Only salesperson or admin can access these routes.
+ * @type {string[]}
+ */
+export const salesRoutes: string[] = [
+    "/vendors",
+    "/vendors/new",
+];
+
+/**
  * Default redirect URL after login.
  * @type {string}
  */

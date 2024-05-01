@@ -6,6 +6,13 @@ interface ProductInfo {
     link: string;
 }
 
+interface ProductAssign {
+    id: string;
+    name: string;
+    category: string;
+    sku: string;
+}
+
 interface ProductItem extends ProductInfo {
     location: string;
     imgSrc: string;
@@ -25,4 +32,9 @@ interface UserBasicInfo {
     state: string;
     zip: string;
     country: string;
+}
+
+interface NavigationItem {
+    name: string;
+    href: string;
 }

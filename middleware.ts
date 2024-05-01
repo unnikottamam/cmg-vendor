@@ -6,6 +6,7 @@ import {
     apiAuthPrefix,
     authRoutes,
     publicRoutes,
+    salesRoutes,
 } from "@/routes";
 
 export const { auth } = NextAuth(authConfig)
@@ -16,6 +17,8 @@ export default auth((req: NextRequest & { auth: Session | null }): Response | vo
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+    const isSalesRoute = salesRoutes.includes(nextUrl.pathname);
+    const isAdmin = isLoggedIn ? req.auth?.user?.role === "ADMIN" : false;
 
     if (isApiAuthRoute) {
         return;
@@ -28,6 +31,9 @@ export default auth((req: NextRequest & { auth: Session | null }): Response | vo
     }
     if (!isLoggedIn && !isPublicRoute) {
         return Response.redirect(new URL("/login", nextUrl));
+    }
+    if (isSalesRoute && !isAdmin) {
+        return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
     }
     return;
 })
