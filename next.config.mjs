@@ -9,6 +9,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "coastmachinery.com",
+      },
+      {
+        protocol: "https",
         hostname: "stag.coastmachinery.com",
       },
     ],
