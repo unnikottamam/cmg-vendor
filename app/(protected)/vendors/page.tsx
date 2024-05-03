@@ -1,4 +1,3 @@
-import { auth } from '@/auth';
 import prisma from '@/prisma/client';
 import Link from 'next/link'
 import React from 'react'
@@ -16,7 +15,6 @@ import axios from 'axios';
 import AssignVendor from './_components/AssignVendor';
 
 const Vendors = async () => {
-    const { user } = await auth() as { user: { id: string, role: string } };
     const vendors = await prisma.user.findMany({
         where: { role: 'EDITOR' }
     });
@@ -62,7 +60,7 @@ const Vendors = async () => {
             <div className="flex justify-between items-center mb-3">
                 <h1 className="text-xl font-semibold text-slate-600">All Vendors</h1>
                 <div className="flex gap-2">
-                    <AssignVendor vendors={vendors} products={products} />
+                    {(vendors.length && products.length) ? <AssignVendor vendors={vendors} products={products} /> : ''}
                     <Link href="/vendors/new">
                         <Button size="sm" variant="success">
                             <FiUserPlus />
@@ -85,7 +83,7 @@ const Vendors = async () => {
                 <TableBody>
                     {vendors.length ? vendors.map((user) => {
                         const fullName = `${user.firstName} ${user.lastName}`;
-                        const { id, email, phone, company } = user;
+                        const { email, phone, company } = user;
                         const address = `${user.streetAddress}, ${user.city}, ${user.state}, ${user.zip}, ${user.country}`;
                         return (
                             <TableRow key={user.id}>
