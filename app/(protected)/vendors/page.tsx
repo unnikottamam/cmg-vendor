@@ -43,7 +43,7 @@ const Vendors = async () => {
             },
             params: {
                 'exclude': internalProducts.map(product => product.wooId).join(','),
-                'per_page': 100
+                'per_page': 30
             }
         }
     );
