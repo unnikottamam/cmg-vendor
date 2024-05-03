@@ -21,6 +21,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { IoArrowBack } from "react-icons/io5";
 import { Input } from "@/components/ui/input";
 import toast from 'react-hot-toast';
@@ -190,12 +197,21 @@ const NewVendor = () => {
                                     <FormField
                                         control={form.control}
                                         name="country"
+                                        defaultValue="CANADA"
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel>Country</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Country" {...field} />
-                                                </FormControl>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="CANADA">Canada</SelectItem>
+                                                        <SelectItem value="USA">USA</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
                                                 <FormMessage />
                                             </FormItem>
                                         )}

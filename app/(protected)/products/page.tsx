@@ -95,9 +95,9 @@ const ProductsPage = async () => {
                         <TableHead className="w-32">No. Enquiry</TableHead>
                         <TableHead className="w-32">SKU</TableHead>
                         <TableHead className="w-16"></TableHead>
-                        {!isAdmin && <TableHead className="w-36 text-center">
+                        {!isAdmin ? <TableHead className="w-36 text-center">
                             <BsEnvelope className="inline-flex" size={18} />
-                        </TableHead>}
+                        </TableHead> : <TableHead className="w-16"></TableHead>}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -129,16 +129,20 @@ const ProductsPage = async () => {
                                         </Link>
                                     }
                                 </TableCell>
-                                {!isAdmin && <TableCell className="text-right">
-                                    <Link scroll={false} className="text-white bg-green-600 hover:bg-gray-700 rounded-md px-2 py-1 justify-center text-sm flex" href={`/products/${product.id}`}>
+                                {!isAdmin ? <TableCell className="text-right">
+                                    <Link target="_blank" scroll={false} className="text-white bg-green-600 hover:bg-gray-700 rounded-md px-2 py-1 justify-center text-sm flex" href={`/products/${product.id}`}>
                                         Contact Sales
+                                    </Link>
+                                </TableCell> : <TableCell className="text-right">
+                                    <Link className="text-white bg-destructive hover:bg-gray-700 rounded-md px-2 py-1 text-sm" target="_blank" href={`${process.env.WOO_URL}/wp-admin/post.php?post=${product.id}&action=edit`}>
+                                        Edit
                                     </Link>
                                 </TableCell>}
                             </TableRow>
                         );
                     }) : (
                         <TableRow>
-                            <TableCell colSpan={isAdmin ? 6 : 7} className="text-center">No products to show</TableCell>
+                            <TableCell colSpan={8} className="text-center">No products to show</TableCell>
                         </TableRow>
                     )}
                 </TableBody>

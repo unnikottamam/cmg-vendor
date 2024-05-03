@@ -50,9 +50,9 @@ const Vendors = async () => {
         }
     );
     if (response.data.length) {
-        response.data.forEach((product: { id: string; name: string; status: string; sku: string; categories: { id: string, name: string, slug: string }[]; }) => {
+        response.data.forEach((product: { id: string; name: string; sku: string; categories: { id: string, name: string, slug: string }[]; }) => {
             const category = product.categories[0].name;
-            const { id, name, status, sku } = product;
+            const { id, name, sku } = product;
             products.push({ id, name, category, sku });
         });
     }
@@ -101,7 +101,7 @@ const Vendors = async () => {
                         );
                     }) : (
                         <TableRow>
-                            <TableCell colSpan={5} className="text-center">No vendors to show</TableCell>
+                            <TableCell colSpan={6} className="text-center">No vendors to show</TableCell>
                         </TableRow>
                     )}
                 </TableBody>
