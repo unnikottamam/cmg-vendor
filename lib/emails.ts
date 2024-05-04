@@ -1,7 +1,6 @@
 "use server";
 
 import ProductEmailToSales from '@/components/emails/mail-product-sales';
-import VerifyEmail from '@/components/emails/verify-email';
 import { defaultEmailSchema } from '@/app/validationSchemas/email'
 import { Resend } from 'resend';
 import { z } from 'zod';
@@ -10,17 +9,18 @@ import { getUserById } from '@/data/user';
 import UserRegistration from '@/components/emails/user-registration';
 import ResetPassword from '@/components/emails/reset-password';
 import NewProductEmailToSales from '@/components/emails/new-product';
+import VerifyEmail from '@/emails/VerifyEmail';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 type EmailData = z.infer<typeof defaultEmailSchema>;
 
-export async function sendVerificationEmail(email: string, token: string) {
+export async function sendVerificationEmail(email: string, token: string, firstName: string) {
     const verifyLink = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
     return await resend.emails.send({
         from: process.env.EMAIL_FROM as string,
         to: email,
         subject: "Verify your email",
-        react: VerifyEmail({ verifyLink: verifyLink }),
+        react: VerifyEmail({ verifyLink: verifyLink, firstName: firstName }),
     });
 }
 

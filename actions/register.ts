@@ -41,7 +41,7 @@ export const register = async (values: z.infer<typeof userSchema>) => {
     });
 
     const token = await generateVerificationToken(newUser.id);
-    await sendVerificationEmail(newUser.email, token.token);
+    await sendVerificationEmail(newUser.email, token.token, newUser.firstName);
     const newUserRegistrationData = {
         id: newUser.id,
         email: newUser.email,

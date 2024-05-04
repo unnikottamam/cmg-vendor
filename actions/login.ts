@@ -22,7 +22,7 @@ export const login = async (values: z.infer<typeof loginSchema>) => {
         const currentTime = new Date();
         if (!token || token?.expires <= currentTime) {
             const newToken = await generateVerificationToken(user.id);
-            await sendVerificationEmail(user.email, newToken.token);
+            await sendVerificationEmail(user.email, newToken.token, user.firstName);
             return { error: 'Please verify your email to confirm your account, token will expire in 1 hour.' };
         }
         return { error: 'Please verify your email to confirm your account, token will expire in 1 hour.' };
