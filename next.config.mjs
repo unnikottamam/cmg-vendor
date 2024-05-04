@@ -13,6 +13,10 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "**.smushcdn.com",
+      },
+      {
+        protocol: "https",
         hostname: "stag.coastmachinery.com",
       },
     ],
