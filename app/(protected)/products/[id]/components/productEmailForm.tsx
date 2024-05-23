@@ -21,6 +21,7 @@ import { z } from 'zod'
 import { sendEmailToSales } from '@/lib/emails';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import Loading from '@/components/ui/Loading';
 
 type EmailData = z.infer<typeof defaultEmailSchema>;
 
@@ -39,7 +40,7 @@ const ProductEmailForm = ({ product }: { product: ProductInfo }) => {
     };
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 relative">
                 <FormField
                     control={form.control}
                     name="subject"
@@ -73,8 +74,11 @@ const ProductEmailForm = ({ product }: { product: ProductInfo }) => {
                     )}
                 />
                 <DialogFooter>
-                    <Button type="submit">Send Mail</Button>
+                    <Button type="submit" disabled={form.formState.isSubmitting}>Send Mail</Button>
                 </DialogFooter>
+                {form.formState.isSubmitting && (
+                    <Loading text="Please wait..." />
+                )}
             </form>
         </Form>
     )

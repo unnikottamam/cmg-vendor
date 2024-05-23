@@ -38,3 +38,10 @@ interface NavigationItem {
     name: string;
     href: string;
 }
+
+interface Category {
+    id: number;
+    name: string;
+    parent: number;
+    children?: Category[];
+}

@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/table"
 import { Button } from '@/components/ui/button';
 import { FiUserPlus } from "react-icons/fi";
-import axios from 'axios';
+import { FaRegEdit } from "react-icons/fa";
 import AssignVendor from './_components/AssignVendor';
+import { getUnassignedProducts } from '@/actions/products';
 
 const Vendors = async () => {
     const vendors = await prisma.user.findMany({
@@ -26,34 +27,7 @@ const Vendors = async () => {
         });
     });
     await Promise.all(numProdPrmoises);
-
-    let products: ProductAssign[] = [];
-    const internalProducts = await prisma.product.findMany({
-        orderBy: { id: "desc" }
-    });
-    const response = await axios.get(
-        `${process.env.WOO_URL}/wp-json/wc/v3/products`,
-        {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-            auth: {
-                username: process.env.WOO_CONSUMER_KEY as string,
-                password: process.env.WOO_SECRET_KEY as string,
-            },
-            params: {
-                'exclude': internalProducts.map(product => product.wooId).join(','),
-                'per_page': 30
-            }
-        }
-    );
-    if (response.data.length) {
-        response.data.forEach((product: { id: string; name: string; sku: string; categories: { id: string, name: string, slug: string }[]; }) => {
-            const category = product.categories[0].name;
-            const { id, name, sku } = product;
-            products.push({ id, name, category, sku });
-        });
-    }
+    const products = await getUnassignedProducts();
 
     return (
         <>
@@ -77,7 +51,8 @@ const Vendors = async () => {
                         <TableHead>Phone</TableHead>
                         <TableHead>Company</TableHead>
                         <TableHead>Address</TableHead>
-                        <TableHead>Product Count</TableHead>
+                        <TableHead className="w-24">Products</TableHead>
+                        <TableHead className="w-32"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -95,11 +70,19 @@ const Vendors = async () => {
                                 <TableCell className="text-center">
                                     {numOfProducts[user.id] || 0}
                                 </TableCell>
+                                <TableCell>
+                                    <Link href={`/vendors/${user.id}`}>
+                                        <Button size="sm" variant="default">
+                                            <FaRegEdit />
+                                            Manage
+                                        </Button>
+                                    </Link>
+                                </TableCell>
                             </TableRow>
                         );
                     }) : (
                         <TableRow>
-                            <TableCell colSpan={6} className="text-center">No vendors to show</TableCell>
+                            <TableCell colSpan={7} className="text-center">No vendors to show</TableCell>
                         </TableRow>
                     )}
                 </TableBody>

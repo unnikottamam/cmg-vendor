@@ -79,3 +79,20 @@ export const assignVendor = async (values: any) => {
 
     return { success: "Product assigned successfully", id: vendorProduct.id };
 }
+
+export const getVendorById = async (id: number) => {
+    try {
+        const vendor = await prisma.user.findUnique({
+            where: {
+                id,
+                role: 'EDITOR'
+            }
+        });
+        if (!vendor) return { error: 'Vendor not found' };
+
+        return vendor;
+    } catch {
+        return null;
+    }
+
+}

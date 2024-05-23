@@ -39,15 +39,20 @@ import toast from 'react-hot-toast';
 import { assignVendorSchema } from '@/app/validationSchemas/vendor';
 import { assignVendor } from '@/actions/vendor';
 import { FaPlus } from 'react-icons/fa';
+import Loading from '@/components/ui/Loading';
 
-const AssignVendor = ({ vendors, products }: { vendors: User[], products: ProductAssign[] }) => {
+const AssignVendor = ({ vendors, products, userId, userName }: { vendors?: User[], products: ProductAssign[], userId?: number, userName?: string }) => {
     const [open, setOpen] = useState(false);
     const router = useRouter();
     const productLocation = [
         "Stay in Shop",
         "Go to CMG"
     ];
-    const initialValues = {};
+    const initialValues = {
+        vendorId: userId ? userId.toString() : undefined,
+        productId: undefined,
+        location: ''
+    };
     const form = useForm<z.infer<typeof assignVendorSchema>>({
         resolver: zodResolver(assignVendorSchema),
         defaultValues: initialValues,
@@ -60,7 +65,8 @@ const AssignVendor = ({ vendors, products }: { vendors: User[], products: Produc
         } else {
             toast.success('Product assigned successfully to vendor');
             setOpen(false);
-            router.push('/vendors')
+            const redirect = userId ? `/vendors/${userId}` : '/vendors';
+            router.push(redirect);
             router.refresh();
         }
     });
@@ -75,7 +81,7 @@ const AssignVendor = ({ vendors, products }: { vendors: User[], products: Produc
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
                         <DialogHeader>
                             <DialogTitle>Assign Product</DialogTitle>
                             <DialogDescription>Assign a product to a vendor</DialogDescription>
@@ -88,18 +94,22 @@ const AssignVendor = ({ vendors, products }: { vendors: User[], products: Produc
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>Vendor</FormLabel>
-                                            <Select onValueChange={field.onChange}>
+                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder="Select a vendor" />
+                                                        {userId ? <SelectValue /> : <SelectValue placeholder="Select a vendor" />}
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    {vendors.map((vendor) => (
+                                                    {vendors?.length ? vendors.map((vendor) => (
                                                         <SelectItem key={vendor.id} value={vendor.id.toString()}>
                                                             {vendor.firstName} {vendor.lastName}
                                                         </SelectItem>
-                                                    ))}
+                                                    )) : (
+                                                        <SelectItem value={userId!.toString()}>
+                                                            {userName}
+                                                        </SelectItem>
+                                                    )}
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -157,8 +167,11 @@ const AssignVendor = ({ vendors, products }: { vendors: User[], products: Produc
                             </CardContent>
                         </Card>
                         <DialogFooter>
-                            <Button className="mt-3" type="submit">Submit</Button>
+                            <Button className="mt-3" type="submit" disabled={form.formState.isSubmitting}>Submit</Button>
                         </DialogFooter>
+                        {form.formState.isSubmitting && (
+                            <Loading text="Please wait..." />
+                        )}
                     </form>
                 </Form>
             </DialogContent>

@@ -130,7 +130,7 @@ const ProductsPage = async () => {
                                     }
                                 </TableCell>
                                 {!isAdmin ? <TableCell className="text-right">
-                                    <Link target="_blank" scroll={false} className="text-white bg-green-600 hover:bg-gray-700 rounded-md px-2 py-1 justify-center text-sm flex" href={`/products/${product.id}`}>
+                                    <Link scroll={false} className="text-white bg-green-600 hover:bg-gray-700 rounded-md px-2 py-1 justify-center text-sm flex" href={`/products/${product.id}`}>
                                         Contact Sales
                                     </Link>
                                 </TableCell> : <TableCell className="text-right">

@@ -30,13 +30,26 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Loading from "@/components/ui/Loading";
+import imageCompression from 'browser-image-compression';
 
-interface Category {
-    id: number;
-    name: string;
-    parent: number;
-    children?: Category[];
-}
+const compressImage = async (image: File) => {
+    const options = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 800,
+        useWebWorker: true,
+    };
+    try {
+        const compressedBlob = await imageCompression(image, options);
+        const compressedFile = new File([compressedBlob], image.name, {
+            type: compressedBlob.type,
+            lastModified: image.lastModified
+        });
+        return compressedFile;
+    } catch (error) {
+        return image;
+    }
+};
 
 const fetchAllCategories = async () => {
     try {
@@ -54,7 +67,6 @@ const productLocation = [
 
 const NewProduct = () => {
     const [allCategories, setAllCategories] = useState<Category[]>([]);
-
     const router = useRouter();
     const initialValues = {
         title: "",
@@ -70,9 +82,11 @@ const NewProduct = () => {
     });
 
     const [files, setFiles] = useState<File[]>([]);
-    const onDrop = (acceptedFiles: File[]) => {
-        setFiles(acceptedFiles);
-        form.setValue('files', acceptedFiles, { shouldValidate: true });
+    const onDrop = async (acceptedFiles: File[]) => {
+        const compressedFilesPromises = acceptedFiles.map((file) => compressImage(file));
+        const compressedFiles = await Promise.all(compressedFilesPromises);
+        setFiles(compressedFiles);
+        form.setValue('files', compressedFiles, { shouldValidate: true });
     };
 
     const { getRootProps, getInputProps } = useDropzone({
@@ -80,7 +94,8 @@ const NewProduct = () => {
         accept: {
             'image/jpeg': [],
             'image/png': []
-        }
+        },
+        maxFiles: 5,
     });
 
     const onSubmit = async (data: z.infer<typeof productSchema>) => {
@@ -136,12 +151,11 @@ const NewProduct = () => {
         <div className="flex flex-col space-y-3">
             {!allCategories.length ?
                 <div className="flex flex-col justify-center items-center text-center">
-                    <BiLoaderAlt className="animate-spin" />
-                    <p>Loading ...</p>
+                    <Loading text="Please wait..." />
                 </div>
                 : <>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full shadow-lg p-6 border border-slate-200">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full shadow-lg p-6 border border-slate-200 relative">
                             <div className="flex flex-col space-y-3">
                                 <FormField
                                     control={form.control}
@@ -249,12 +263,13 @@ const NewProduct = () => {
                                                 Product Images *
                                                 <p className="text-xs">(jpg, png formats only, size must be &lt; 5mb)</p>
                                             </FormLabel>
-                                            <div {...getRootProps()} className="border py-2 px-3 rounded-md border-gray-300">
+                                            <div {...getRootProps()} className="border py-1 px-3 rounded-md border-slate-200 cursor-pointer">
                                                 <input {...getInputProps()} />
-                                                <p className="text-sm text-center text-destructive">
+                                                <p className="text-sm text-center text-destructive flex flex-col items-center justify-center">
                                                     <em>
                                                         Drag and drop <strong>multiple</strong> images here, or click to select <strong>multiple files</strong>
                                                     </em>
+                                                    <strong>Select Max 5 Images</strong>
                                                 </p>
                                             </div>
                                             <div className="grid grid-cols-4 gap-2">
@@ -276,10 +291,12 @@ const NewProduct = () => {
                                     )}
                                 />
                             </div>
-                            <Button variant="success" type="submit">
+                            <Button variant="success" type="submit" disabled={form.formState.isSubmitting}>
                                 Create Product
-                                {(form.formState.isSubmitting || form.formState.isSubmitSuccessful) && <BiLoaderAlt className="animate-spin" />}
                             </Button>
+                            {form.formState.isSubmitting && (
+                                <Loading text="Please wait..." />
+                            )}
                         </form>
                     </Form>
                 </>

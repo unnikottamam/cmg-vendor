@@ -57,5 +57,5 @@ export const register = async (values: z.infer<typeof userSchema>) => {
     }
     await newUserRegistrationEmail(newUserRegistrationData);
 
-    return { success: "User registered successfully, please verify your email address to login, token will expire in 1 hour.", email: newUser.email }
+    return { success: "User registered successfully, please verify your email address to login, token will expire in 1 hour (check spam folder).", email: newUser.email }
 }

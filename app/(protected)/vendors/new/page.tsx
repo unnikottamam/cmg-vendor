@@ -35,6 +35,7 @@ import { useRouter } from 'next/navigation';
 import { vendorSchema } from '@/app/validationSchemas/vendor';
 import { createVendor } from '@/actions/vendor';
 import Link from 'next/link';
+import Loading from '@/components/ui/Loading';
 
 const NewVendor = () => {
     const router = useRouter();
@@ -72,7 +73,7 @@ const NewVendor = () => {
                 </CardHeader>
                 <CardContent>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="relative">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="p-4 border rounded-md space-y-3">
                                     <FormField
@@ -219,8 +220,13 @@ const NewVendor = () => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 gap-4">
-                                <Button variant="success" className="mt-3" type="submit">Submit</Button>
+                                <Button variant="success" className="mt-3" type="submit" disabled={form.formState.isSubmitting}>
+                                    Submit
+                                </Button>
                             </div>
+                            {form.formState.isSubmitting && (
+                                <Loading text="Please wait..." />
+                            )}
                         </form>
                     </Form>
                 </CardContent>

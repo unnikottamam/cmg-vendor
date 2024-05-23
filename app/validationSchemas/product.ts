@@ -14,5 +14,5 @@ export const productSchema = z.object({
     category: z.string().min(1, "Category is required"),
     location: z.string().min(1, "Location is required"),
     content: z.string().min(20, "Product Description is required (min 20 characters)"),
-    files: z.custom<File>().array().min(1, "Please provide at least an image of the machine")
+    files: z.custom<Blob>().array().max(5, "You can only upload up to 5 images").min(1, "At least one image is required")
 });
