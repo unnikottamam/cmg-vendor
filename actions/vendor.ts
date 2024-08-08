@@ -64,7 +64,7 @@ export const assignVendor = async (values: any) => {
             }
         }
     );
-    const category = wooProduct.data.categories ? wooProduct.data.categories[0].name : 'No category';
+    const category = wooProduct.data.categories && wooProduct.data.categories.length ? wooProduct.data.categories[0].name : 'No category';
 
     const vendorProduct = await prisma.product.create({
         data: {

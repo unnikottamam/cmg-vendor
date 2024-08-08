@@ -26,7 +26,7 @@ export const getUnassignedProducts = async () => {
     );
     if (response.data.length) {
         response.data.forEach((product: { id: string; name: string; sku: string; categories: { id: string, name: string, slug: string }[]; }) => {
-            const category = product.categories[0].name;
+            const category = product.categories && product.categories.length ? product.categories[0].name : 'Uncategorized';
             const { id, name, sku } = product;
             products.push({ id, name, category, sku });
         });

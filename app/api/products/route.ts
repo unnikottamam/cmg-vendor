@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     const productIns = {
         title: wooProduct.data.name,
         content: body.content as string,
-        category: wooProduct.data.categories[0].name,
+        category: wooProduct.data.categories && wooProduct.data.categories.length ? wooProduct.data.categories[0].name : 'No category',
         wooId: wooProduct.data.id,
         authorId: user.id,
         location: body.location as string
